@@ -68,12 +68,13 @@ module Utility
 
   def check_valid_time(start_time:, end_time:)
     begin
-      !!Time.parse(start_time) && !!Time.parse(end_time)
+      talk_start_time = Time.parse(start_time)
+      talk_end_time = Time.parse(end_time)
     rescue ArgumentError
       raise StandardError, "Either #{start_time} or #{end_time} is invalid"
     end
 
-    if (Time.parse(start_time) > Time.parse(end_time))
+    if talk_start_time > talk_end_time
       raise StandardError, "start time: #{start_time} should be less than end time: #{end_time}"
     end
   end
