@@ -57,6 +57,8 @@ class Events
     def run_create_talk_commands(event_object_parts)
       event_name, talk_name, talk_start_time, talk_end_time, speaker_name = event_object_parts
 
+      check_valid_time(start_time: talk_start_time, end_time: talk_end_time)
+
       event = Event.find_by!(event_name: event_name)
       speaker = Speaker.find_by!(name: speaker_name)
 
