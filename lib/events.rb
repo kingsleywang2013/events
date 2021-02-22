@@ -57,11 +57,14 @@ class Events
     def run_create_talk_commands(event_object_parts)
       event_name, talk_name, talk_start_time, talk_end_time, speaker_name = event_object_parts
 
+      # Check if valid talk_start_time and talk_end_time
       check_valid_time(start_time: talk_start_time, end_time: talk_end_time)
 
+      # Check if event and speaker exist
       event = Event.find_by!(event_name: event_name)
       speaker = Speaker.find_by!(name: speaker_name)
 
+      # Check if talk time is overlap
       event.talk_overlaps?(talk_start_time: talk_start_time, talk_end_time: talk_end_time)
 
       talk = Talk.new(talk_name: talk_name, talk_start_time: talk_start_time, talk_end_time: talk_end_time)
