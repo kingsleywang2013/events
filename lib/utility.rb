@@ -3,22 +3,22 @@ module Utility
   VALID_CREATE_OBJECTS = %w[EVENT SPEAKER TALK].freeze
   VALID_PRINT_OBJECTS = %w[TALKS].freeze
   VALID_CREATE_OBJECT_MAPPING = {
-    'EVENT': 1,
-    'SPEAKER': 1,
-    'TALK': 5
+    'EVENT' => 1,
+    'SPEAKER' => 1,
+    'TALK' => 5
   }.freeze
   VALID_PRINT_OBJECT_MAPPING = {
-    'PRINT': 1
+    'TALKS' => 1
   }
 
   def extract_commands(input)
-    input.split(/\s(?=(?:[^'"]|'[^']*'|"[^"]*")*$)/)
+    input.strip.split(/\s(?=(?:[^'"]|'[^']*'|"[^"]*")*$)/)
   end
 
   def check_valid_action(commands)
     action = commands[0]
 
-    unless VALID_ACTION.include?(aciton)
+    unless VALID_ACTION.include?(action.upcase)
       raise StandardError, "#{action} is not a valid Action in #{VALID_ACTION}"
     end
 
@@ -27,12 +27,13 @@ module Utility
 
   def get_event_parts(commands)
     action = check_valid_action(commands)
-    event_object = commands[1]
-    event_object_parts = commands[1...-1]
+    action = action.upcase
+    event_object = commands[1].upcase
+    event_object_parts = commands[2..-1]
 
-    if action.upcase == 'CREATE'
+    if action == 'CREATE'
       check_valid_create_objects(event_object, event_object_parts)
-    elsif action.upcase == 'PRINT'
+    elsif action == 'PRINT'
       check_valid_print_objects(event_object, event_object_parts)
     end
 
@@ -41,8 +42,8 @@ module Utility
 
   def check_valid_create_objects(event_object, event_object_parts)
     # Check if event_object is valid in [EVENT SPEAKER TALK]
-    unless VALID_CREATE_OBJECTS.include?(event_object.upcase)
-      raise StandardError, "#{event_object} is not a valid Action in #{VALID_CREATE_OBJECTS}"
+    unless VALID_CREATE_OBJECTS.include?(event_object)
+      raise StandardError, "#{event_object} is not a valid action object in #{VALID_CREATE_OBJECTS}"
     end
 
     # Check if number of args are valid for each [EVENT SPEAKER TALK]
@@ -52,14 +53,18 @@ module Utility
   end
 
   def check_valid_print_objects(event_object, event_object_parts)
-    # Check if event_object is valid in [EVENT SPEAKER TALK]
-    unless VALID_PRINT_OBJECTS.include?(event_object.upcase)
-      raise StandardError, "#{event_object} is not a valid Action in #{VALID_PRINT_OBJECTS}"
+    # Check if event_object is valid in [TALKS]
+    unless VALID_PRINT_OBJECTS.include?(event_object)
+      raise StandardError, "#{event_object} is not a valid action object in #{VALID_PRINT_OBJECTS}"
     end
 
     # Check if number of args are valid for each [EVENT SPEAKER TALK]
     unless VALID_PRINT_OBJECT_MAPPING[event_object] == event_object_parts.length
       raise StandardError, "Your input args are not valid for #{event_object}, we expect number of args is #{VALID_PRINT_OBJECT_MAPPING[event_object]}"
     end
+  end
+
+  def format_time(time)
+    time.strftime("%l:%M%P")
   end
 end

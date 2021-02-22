@@ -65,7 +65,7 @@ class StartEvent
         # If the input is valid, the event will return
         # the output otherwise it will print out the error instruction
         begin
-          output = Event.run(input)
+          output = Events.run(input)
         rescue StandardError => e
           puts e
           print prompt
